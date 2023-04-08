@@ -6,9 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
+import websocket.websocket.User;
 import websocket.websocket.dto.ChatRoom;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.*;
 
@@ -24,7 +29,14 @@ public class ChatService {
         chatRooms = new LinkedHashMap<>();
     }
 
-    public List<ChatRoom> findAllRoom() {
+    public List<ChatRoom> findAllRoom(HttpServletRequest request, HttpServletResponse response) {
+
+        User user = new User("id", "sassy", "sassy@naver.com");
+        String id = user.getId();
+        HttpSession session = request.getSession();
+        Cookie cookie = new Cookie("name", user.getName());
+        response.addCookie(cookie);
+        session.setAttribute(id, user);
         return new ArrayList<>(chatRooms.values());
     }
 
@@ -48,5 +60,12 @@ public class ChatService {
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
+    }
+
+    public List<ChatRoom> findSession(HttpServletRequest request, HttpServletResponse response) {
+        HttpSession session = request.getSession();
+        Object user = session.getAttribute("id");
+        log.info("user={}", user.toString());
+        return null;
     }
 }

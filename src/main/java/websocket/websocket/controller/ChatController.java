@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import websocket.websocket.dto.ChatRoom;
 import websocket.websocket.service.ChatService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -20,7 +22,12 @@ public class ChatController {
     }
 
     @GetMapping
-    public List<ChatRoom> findAllRoom() {
-        return chatService.findAllRoom();
+    public List<ChatRoom> login(HttpServletRequest request, HttpServletResponse response) {
+        return chatService.findAllRoom(request, response);
+    }
+
+    @GetMapping("/1")
+    public List<ChatRoom> session(HttpServletRequest request, HttpServletResponse response) {
+        return chatService.findSession(request, response);
     }
 }
